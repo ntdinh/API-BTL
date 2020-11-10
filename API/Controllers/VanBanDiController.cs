@@ -16,11 +16,11 @@ namespace API.Controllers
     [ApiController]
     public class VanBanDiController : ControllerBase
     {
-        private IVanbandiBusiness _userBusiness;
+        private IVanbandiBusiness _vanbanBusiness;
         private string _path;
         public VanBanDiController(IVanbandiBusiness userBusiness, IConfiguration configuration)
         {
-            _userBusiness = userBusiness;
+            _vanbanBusiness = userBusiness;
             _path = configuration["AppSettings:PATH"];
         }
         public string SaveFileFromBase64String(string RelativePathFileName, string dataFromBase64String)
@@ -55,7 +55,7 @@ namespace API.Controllers
         {
             string vanbanid = "";
             if (formData.Keys.Contains("vanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["vanbanid"]))) { vanbanid = Convert.ToString(formData["vanbanid"]); }
-            _userBusiness.Delete(vanbanid);
+            _vanbanBusiness.Delete(vanbanid);
             return Ok();
         }
         [Route("create-vanbandi")]
@@ -64,14 +64,14 @@ namespace API.Controllers
         {
 
             model.vanbanid = Guid.NewGuid().ToString();
-            _userBusiness.Create(model);
+            _vanbanBusiness.Create(model);
             return model;
         }
         [Route("update-vanbandi")]
         [HttpPost]
         public VanbandiModel UpdateVanbandi([FromBody] VanbandiModel model)
         {
-            _userBusiness.Update(model);
+            _vanbanBusiness.Update(model);
             return model;
         }
 
@@ -79,7 +79,7 @@ namespace API.Controllers
         [HttpGet]
         public VanbandiModel GetDatabyID(string id)
         {
-            return _userBusiness.GetDatabyID(id);
+            return _vanbanBusiness.GetDatabyID(id);
         }
 
         [Route("search")]
@@ -95,7 +95,7 @@ namespace API.Controllers
                 if (formData.Keys.Contains("noinhan") && !string.IsNullOrEmpty(Convert.ToString(formData["noinhan"]))) { noinhan = Convert.ToString(formData["noinhan"]); }
 
                 long total = 0;
-                var data = _userBusiness.Search(page, pageSize, out total, noinhan);
+                var data = _vanbanBusiness.Search(page, pageSize, out total, noinhan);
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;

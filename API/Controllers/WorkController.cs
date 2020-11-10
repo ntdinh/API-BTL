@@ -15,11 +15,11 @@ namespace API.Controllers
     [ApiController]
     public class WorkController : ControllerBase
     {
-        private IWorkBusiness _userBusiness;
+        private IWorkBusiness _workBusiness;
         private string _path;
         public WorkController(IWorkBusiness userBusiness, IConfiguration configuration)
         {
-            _userBusiness = userBusiness;
+            _workBusiness = userBusiness;
             _path = configuration["AppSettings:PATH"];
         }
         public string SaveFileFromBase64String(string RelativePathFileName, string dataFromBase64String)
@@ -54,7 +54,7 @@ namespace API.Controllers
         {
             string workid = "";
             if (formData.Keys.Contains("workid") && !string.IsNullOrEmpty(Convert.ToString(formData["workid"]))) { workid = Convert.ToString(formData["workid"]); }
-            _userBusiness.Delete(workid);
+            _workBusiness.Delete(workid);
             return Ok();
         }
         [Route("create-work")]
@@ -63,14 +63,14 @@ namespace API.Controllers
         {
            
             model.workid = Guid.NewGuid().ToString();
-            _userBusiness.Create(model);
+            _workBusiness.Create(model);
             return model;
         }
         [Route("update-work")]
         [HttpPost]
         public WorkModel UpdateWork([FromBody] WorkModel model)
         {
-            _userBusiness.Update(model);
+            _workBusiness.Update(model);
             return model;
         }
 
@@ -78,7 +78,7 @@ namespace API.Controllers
         [HttpGet]
         public WorkModel GetDatabyID(string id)
         {
-            return _userBusiness.GetDatabyID(id);
+            return _workBusiness.GetDatabyID(id);
         }
 
         [Route("search")]
@@ -94,7 +94,7 @@ namespace API.Controllers
                 if (formData.Keys.Contains("workname") && !string.IsNullOrEmpty(Convert.ToString(formData["workname"]))) { workname = Convert.ToString(formData["workname"]); }
              
                 long total = 0;
-                var data = _userBusiness.Search(page, pageSize, out total, workname );
+                var data = _workBusiness.Search(page, pageSize, out total, workname );
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;

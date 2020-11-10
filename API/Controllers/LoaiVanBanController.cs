@@ -15,11 +15,11 @@ namespace API.Controllers
     [ApiController]
     public class LoaiVanBanController : ControllerBase
     {
-        private ILoaiVanBanBusiness _userBusiness;
+        private ILoaiVanBanBusiness _loaivbBusiness;
         private string _path;
         public LoaiVanBanController( ILoaiVanBanBusiness userBusiness, IConfiguration configuration)
         {
-            _userBusiness = userBusiness;
+            _loaivbBusiness = userBusiness;
             _path = configuration["AppSettings:PATH"];
         }
         public string SaveFileFromBase64String(string RelativePathFileName, string dataFromBase64String)
@@ -52,7 +52,7 @@ namespace API.Controllers
         [HttpGet]
         public IEnumerable<LoaiVanBanModel> GetDatabAll()
         {
-            return _userBusiness.GetDataAll();
+            return _loaivbBusiness.GetDataAll();
         }
         [Route("delete-lvb")]
         [HttpPost]
@@ -60,7 +60,7 @@ namespace API.Controllers
         {
             string loaivanbanid = "";
             if (formData.Keys.Contains("loaivanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["loaivanbanid"]))) { loaivanbanid = Convert.ToString(formData["loaivanbanid"]); }
-            _userBusiness.Delete(loaivanbanid);
+            _loaivbBusiness.Delete(loaivanbanid);
             return Ok();
         }
 
@@ -70,7 +70,7 @@ namespace API.Controllers
         {
             
             model.loaivanbanid = Guid.NewGuid().ToString();
-            _userBusiness.Create(model);
+            _loaivbBusiness.Create(model);
             return model;
         }
 
@@ -78,8 +78,8 @@ namespace API.Controllers
         [HttpPost]
         public LoaiVanBanModel UpdateLvb([FromBody] LoaiVanBanModel model)
         {
-         
-            _userBusiness.Update(model);
+
+            _loaivbBusiness.Update(model);
             return model;
         }
 
@@ -87,7 +87,7 @@ namespace API.Controllers
         [HttpGet]
         public LoaiVanBanModel GetDatabyID(string id)
         {
-            return _userBusiness.GetDatabyID(id);
+            return _loaivbBusiness.GetDatabyID(id);
         }
 
         [Route("search")]
@@ -102,7 +102,7 @@ namespace API.Controllers
                 string tenloaivanban = "";
                 if (formData.Keys.Contains("tenloaivanban") && !string.IsNullOrEmpty(Convert.ToString(formData["tenloaivanban"]))) { tenloaivanban = Convert.ToString(formData["tenloaivanban"]); }
                 long total = 0;
-                var data = _userBusiness.Search(page, pageSize, out total, tenloaivanban);
+                var data = _loaivbBusiness.Search(page, pageSize, out total, tenloaivanban);
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;
