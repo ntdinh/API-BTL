@@ -18,15 +18,15 @@ namespace API.Controllers
     [ApiController]
     public class SoVanBanController : ControllerBase
     {
-        private ISoVanBanBusiness _itemBusiness;
+        private ISoVanBanBusiness _sovbBusiness;
         private string _path;
         public SoVanBanController(ISoVanBanBusiness itemBusiness)
         {
-            _itemBusiness = itemBusiness;
+            _sovbBusiness = itemBusiness;
         }
         public SoVanBanController(ISoVanBanBusiness userBusiness, IConfiguration configuration)
         {
-            _itemBusiness = userBusiness;
+            _sovbBusiness = userBusiness;
             _path = configuration["AppSettings:PATH"];
         }
         public string SaveFileFromBase64String(string RelativePathFileName, string dataFromBase64String)
@@ -60,7 +60,7 @@ namespace API.Controllers
         [HttpPost]
         public SoVanBanModel CreateItem([FromBody] SoVanBanModel model)
         {
-            _itemBusiness.Create(model);
+            _sovbBusiness.Create(model);
             return model;
         }
 
@@ -68,14 +68,14 @@ namespace API.Controllers
         [HttpGet]
         public SoVanBanModel GetDatabyID(string id)
         {
-            return _itemBusiness.GetDatabyID(id);
+            return _sovbBusiness.GetDatabyID(id);
         }
 
         [Route("get-all")]
         [HttpGet]
         public IEnumerable<SoVanBanModel> GetDatabAll()
         {
-            return _itemBusiness.GetDataAll();
+            return _sovbBusiness.GetDataAll();
         }
 
         [Route("search")]
@@ -90,7 +90,7 @@ namespace API.Controllers
                 string sovanbanid = "";
                 if (formData.Keys.Contains("sovanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["sovanbanid"]))) { sovanbanid = Convert.ToString(formData["sovanbanid"]); }
                 long total = 0;
-                var data = _itemBusiness.Search(page, pageSize, out total, sovanbanid);
+                var data = _sovbBusiness.Search(page, pageSize, out total, sovanbanid);
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;
@@ -108,7 +108,7 @@ namespace API.Controllers
         {
             string sovanbanid = "";
             if (formData.Keys.Contains("sovanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["sovanbanid"]))) { sovanbanid = Convert.ToString(formData["sovanbanid"]); }
-            _itemBusiness.Delete(sovanbanid);
+            _sovbBusiness.Delete(sovanbanid);
             return Ok();
         }
 
@@ -118,7 +118,7 @@ namespace API.Controllers
         public SoVanBanModel UpdateUser([FromBody] SoVanBanModel model)
         {
 
-            _itemBusiness.Update(model);
+            _sovbBusiness.Update(model);
             return model;
         }
     }
