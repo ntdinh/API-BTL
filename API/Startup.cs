@@ -85,6 +85,8 @@ namespace API
             services.AddTransient<IWorkRepository, WorkRepository>();
             services.AddTransient<IVanbandiBusiness, VanbandiBusiness>();
             services.AddTransient<IVanbandiRepository, VanbandiRepository>();
+            services.AddTransient<IPhongBanBusiness, PhongBanBusiness>();
+            services.AddTransient<IPhongBanRepository, PhongBanRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -35,10 +35,10 @@ namespace DAL
             string msgError = "";
             try
             {
-                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "sp_sovanban_create1",
+                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, " sovanban_create",
                 "@sovanbanid", model.sovanbanid,
-                "@tenovanban", model.tenovanban,
-                "@ghchu", model.ghchu);
+                "@tensovanban", model.tensovanban,
+                "@ghichu", model.ghichu);
                 if ((result != null && !string.IsNullOrEmpty(result.ToString())) || !string.IsNullOrEmpty(msgError))
                 {
                     throw new Exception(Convert.ToString(result) + msgError);
@@ -50,16 +50,16 @@ namespace DAL
                 throw ex;
             }
         }
-        public List<SoVanBanModel> Search(int pageIndex, int pageSize, out long total, string tenovanban)
+        public List<SoVanBanModel> Search(int pageIndex, int pageSize, out long total, string tensovanban)
         {
             string msgError = "";
             total = 0;
             try
             {
-                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "svb_search",
+                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "sovanban_search",
                     "@page_index", pageIndex,
                     "@page_size", pageSize,
-                    "@tenovanban", tenovanban);
+                    "@tensovanban", tensovanban);
                 if (!string.IsNullOrEmpty(msgError))
                     throw new Exception(msgError);
                 if (dt.Rows.Count > 0) total = (long)dt.Rows[0]["RecordCount"];
@@ -75,7 +75,7 @@ namespace DAL
             string msgError = "";
             try
             {
-                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "svb_delete",
+                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "sovanban_delete",
                 "@sovanbanid", id);
                 if ((result != null && !string.IsNullOrEmpty(result.ToString())) || !string.IsNullOrEmpty(msgError))
                 {
@@ -93,7 +93,7 @@ namespace DAL
             string msgError = "";
             try
             {
-                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "sp_svb_get_by_id",
+                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "sovanban_get_by_id",
                      "@sovanbanid", id);
                 if (!string.IsNullOrEmpty(msgError))
                     throw new Exception(msgError);
@@ -109,10 +109,10 @@ namespace DAL
             string msgError = "";
             try
             {
-                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "sp_svb_update",
+                var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "sovanban_update",
                 "@sovanbanid", model.sovanbanid,
-                "@tenovanban", model.tenovanban,
-                "@ghchu", model.ghchu);
+                "@tensovanban", model.tensovanban,
+                "@ghichu", model.ghichu);
                 if ((result != null && !string.IsNullOrEmpty(result.ToString())) || !string.IsNullOrEmpty(msgError))
                 {
                     throw new Exception(Convert.ToString(result) + msgError);

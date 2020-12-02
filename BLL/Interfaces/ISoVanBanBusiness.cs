@@ -11,7 +11,7 @@ namespace BLL
         SoVanBanModel GetDatabyID(string id);
         List<SoVanBanModel> GetDataAll();
         bool Create(SoVanBanModel model);
-        List<SoVanBanModel> Search(int pageIndex, int pageSize, out long total, string tenovanban);
+        List<SoVanBanModel> Search(int pageIndex, int pageSize, out long total, string tensovanban);
         bool Delete(string id);
     }
 }

@@ -15,6 +15,43 @@ namespace DAL
         {
             _dbHelper = dbHelper;
         }
+        public List<LoaiVanBanModel> GetDataAll()
+        {
+            string msgError = "";
+            try
+            {
+                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "lvb_all");
+                if (!string.IsNullOrEmpty(msgError))
+                    throw new Exception(msgError);
+                return dt.ConvertTo<LoaiVanBanModel>().ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public List<VanbandiModel> GetDataAllByPhongBan(int pageIndex, int pageSize, out long total, string tenpb, string loaivb)
+        {
+            string msgError = "";
+            total = 0;
+            try
+            {
+                var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "vanbandi_by_phongban_search",
+                    "@page_index", pageIndex,
+                    "@page_size", pageSize,
+                    "@ten_pb", tenpb,
+                    "@tenloaivanban",loaivb);
+                if (!string.IsNullOrEmpty(msgError))
+                    throw new Exception(msgError);
+                if (dt.Rows.Count > 0) total = (long)dt.Rows[0]["RecordCount"];
+                return dt.ConvertTo<VanbandiModel>().ToList();          
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public bool Create(VanbandiModel model)
         {
             string msgError = "";
@@ -23,9 +60,9 @@ namespace DAL
                 var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "vanbandi_create",
                 "@vanbanid", model.vanbanid,
                 "@ngaybanhanh", model.ngaybanhanh,
-                "@loaivanbanid", model.loaivanbanid,
-                "@noinhan", model.noinhan,
-                "@noidung", model.noidung,
+                "@tenloaivanban", model.tenloaivanban,
+                "@tenphongban", model.tenphongban,
+                "@noidung", model.noidung.Substring(12),
                 "@user_id", model.user_id);
                 if ((result != null && !string.IsNullOrEmpty(result.ToString())) || !string.IsNullOrEmpty(msgError))
                 {
@@ -59,14 +96,16 @@ namespace DAL
         }
         public bool Update(VanbandiModel model)
         {
+
             string msgError = "";
             try
-            {
+            {;
+          
                 var result = _dbHelper.ExecuteScalarSProcedureWithTransaction(out msgError, "vanbandi_update",
                 "@vanbanid", model.@vanbanid,
                 "@ngaybanhanh", model.ngaybanhanh,
-                "@loaivanbanid ", model.loaivanbanid,
-                "@noinhan", model.noinhan,
+                "@tenloaivanban ", model.tenloaivanban,
+                "@tenphongban", model.tenphongban,
                 "@noidung", model.noidung,
                 "@user_id", model.user_id);
                 if ((result != null && !string.IsNullOrEmpty(result.ToString())) || !string.IsNullOrEmpty(msgError))
@@ -98,7 +137,7 @@ namespace DAL
                 throw ex;
             }
         }
-        public List<VanbandiModel> Search(int pageIndex, int pageSize, out long total, string noinhan)
+        public List<VanbandiModel> Search(int pageIndex, int pageSize, out long total, string tenphongban)
         {
             string msgError = "";
             total = 0;
@@ -107,7 +146,7 @@ namespace DAL
                 var dt = _dbHelper.ExecuteSProcedureReturnDataTable(out msgError, "vanbandi_search",
                     "@page_index", pageIndex,
                     "@page_size", pageSize,
-                    "@noinhan", noinhan);
+                    "@tenphongban", tenphongban);
                 if (!string.IsNullOrEmpty(msgError))
                     throw new Exception(msgError);
                 if (dt.Rows.Count > 0) total = (long)dt.Rows[0]["RecordCount"];

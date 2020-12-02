@@ -6,8 +6,8 @@ namespace Model
     public class SoVanBanModel
     {
         public string sovanbanid { get; set; }
-        public string tenovanban { get; set; }
-        public string ghchu { get; set; }
+        public string tensovanban { get; set; }
+        public string ghichu { get; set; }
       
     }
 }

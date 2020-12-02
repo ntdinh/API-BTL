@@ -49,6 +49,39 @@ namespace API.Controllers
                 return ex.Message;
             }
         }
+        [Route("get-all")]
+        [HttpGet]
+        public IEnumerable<LoaiVanBanModel> GetDatabAll()
+        {
+            return _vanbanBusiness.GetDataAll();
+        }
+        [Route("get-all-phongban")]
+        [HttpPost]
+        public ResponseModel GetDataAllByPhongBan([FromBody] Dictionary<string, object> formData)
+        {
+            var response = new ResponseModel();
+            try
+            {
+                var page = int.Parse(formData["page"].ToString());
+                var pageSize = int.Parse(formData["pageSize"].ToString());
+                string loaivb = "";
+                if (formData.Keys.Contains("loaivb") && !string.IsNullOrEmpty(Convert.ToString(formData["loaivb"]))) { loaivb = Convert.ToString(formData["loaivb"]); }
+                string tenpb = "";
+                if (formData.Keys.Contains("tenpb") && !string.IsNullOrEmpty(Convert.ToString(formData["tenpb"]))) { tenpb = Convert.ToString(formData["tenpb"]); }
+
+                long total = 0;
+                var data = _vanbanBusiness.GetDataAllByPhongBan(page, pageSize, out total, tenpb,loaivb);
+                response.TotalItems = total;
+                response.Data = data;
+                response.Page = page;
+                response.PageSize = pageSize;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return response;
+        }
         [Route("delete-vanbandi")]
         [HttpPost]
         public IActionResult DeleteVanbandi([FromBody] Dictionary<string, object> formData)
@@ -91,11 +124,11 @@ namespace API.Controllers
             {
                 var page = int.Parse(formData["page"].ToString());
                 var pageSize = int.Parse(formData["pageSize"].ToString());
-                string noinhan = "";
-                if (formData.Keys.Contains("noinhan") && !string.IsNullOrEmpty(Convert.ToString(formData["noinhan"]))) { noinhan = Convert.ToString(formData["noinhan"]); }
+                string tenphongban = "";
+                if (formData.Keys.Contains("tenphongban") && !string.IsNullOrEmpty(Convert.ToString(formData["tenphongban"]))) { tenphongban = Convert.ToString(formData["tenphongban"]); }
 
                 long total = 0;
-                var data = _vanbanBusiness.Search(page, pageSize, out total, noinhan);
+                var data = _vanbanBusiness.Search(page, pageSize, out total, tenphongban);
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;

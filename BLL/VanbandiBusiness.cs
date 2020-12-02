@@ -21,6 +21,14 @@ namespace BLL
             Secret = configuration["AppSettings:Secret"];
             _res = res;
         }
+        public List<LoaiVanBanModel> GetDataAll()
+        {
+            return _res.GetDataAll();
+        }
+        public List<VanbandiModel> GetDataAllByPhongBan(int pageIndex, int pageSize, out long total, string tenpb, string loaivb)
+        {
+            return _res.GetDataAllByPhongBan(pageIndex, pageSize, out total, tenpb,loaivb);
+        }
         public bool Delete(string id)
         {
             return _res.Delete(id);
@@ -37,9 +45,9 @@ namespace BLL
         {
             return _res.Update(model);
         }
-        public List<VanbandiModel> Search(int pageIndex, int pageSize, out long total, string noinhan)
+        public List<VanbandiModel> Search(int pageIndex, int pageSize, out long total, string tenphongban)
         {
-            return _res.Search(pageIndex, pageSize, out total, noinhan);
+            return _res.Search(pageIndex, pageSize, out total, tenphongban);
         }
     }
 }

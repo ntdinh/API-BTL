@@ -9,24 +9,17 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Model;
-
-
 namespace API.Controllers
 {
-    [AllowAnonymous]
     [Route("api/[controller]")]
     [ApiController]
     public class SoVanBanController : ControllerBase
     {
-        private ISoVanBanBusiness _sovbBusiness;
+        private ISoVanBanBusiness _workBusiness;
         private string _path;
-        public SoVanBanController(ISoVanBanBusiness itemBusiness)
-        {
-            _sovbBusiness = itemBusiness;
-        }
         public SoVanBanController(ISoVanBanBusiness userBusiness, IConfiguration configuration)
         {
-            _sovbBusiness = userBusiness;
+            _workBusiness = userBusiness;
             _path = configuration["AppSettings:PATH"];
         }
         public string SaveFileFromBase64String(string RelativePathFileName, string dataFromBase64String)
@@ -55,27 +48,43 @@ namespace API.Controllers
                 return ex.Message;
             }
         }
-
+        [Route("delete-svb")]
+        [HttpPost]
+        public IActionResult DeleteSVB([FromBody] Dictionary<string, object> formData)
+        {
+            string sovanbanid = "";
+            if (formData.Keys.Contains("sovanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["sovanbanid"]))) { sovanbanid = Convert.ToString(formData["sovanbanid"]); }
+            _workBusiness.Delete(sovanbanid);
+            return Ok();
+        }
         [Route("create-svb")]
         [HttpPost]
-        public SoVanBanModel CreateItem([FromBody] SoVanBanModel model)
+        public SoVanBanModel CreateSVB([FromBody] SoVanBanModel model)
         {
-            _sovbBusiness.Create(model);
+           
+            model.sovanbanid = Guid.NewGuid().ToString();
+            _workBusiness.Create(model);
             return model;
+        }
+        [Route("update-svb")]
+        [HttpPost]
+        public SoVanBanModel UpdateSVB([FromBody] SoVanBanModel model)
+        {
+            _workBusiness.Update(model);
+            return model;
+        }
+        [Route("get-all")]
+        [HttpGet]
+        public IEnumerable<SoVanBanModel> GetDatabAll()
+        {
+            return _workBusiness.GetDataAll();
         }
 
         [Route("get-by-id/{id}")]
         [HttpGet]
         public SoVanBanModel GetDatabyID(string id)
         {
-            return _sovbBusiness.GetDatabyID(id);
-        }
-
-        [Route("get-all")]
-        [HttpGet]
-        public IEnumerable<SoVanBanModel> GetDatabAll()
-        {
-            return _sovbBusiness.GetDataAll();
+            return _workBusiness.GetDatabyID(id);
         }
 
         [Route("search")]
@@ -87,10 +96,11 @@ namespace API.Controllers
             {
                 var page = int.Parse(formData["page"].ToString());
                 var pageSize = int.Parse(formData["pageSize"].ToString());
-                string sovanbanid = "";
-                if (formData.Keys.Contains("sovanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["sovanbanid"]))) { sovanbanid = Convert.ToString(formData["sovanbanid"]); }
+                string tensovanban = "";
+                if (formData.Keys.Contains("tensovanban") && !string.IsNullOrEmpty(Convert.ToString(formData["tensovanban"]))) { tensovanban = Convert.ToString(formData["tensovanban"]); }
+             
                 long total = 0;
-                var data = _sovbBusiness.Search(page, pageSize, out total, sovanbanid);
+                var data = _workBusiness.Search(page, pageSize, out total, tensovanban);
                 response.TotalItems = total;
                 response.Data = data;
                 response.Page = page;
@@ -102,24 +112,6 @@ namespace API.Controllers
             }
             return response;
         }
-        [Route("delete-svb")]
-        [HttpPost]
-        public IActionResult DeleteUser([FromBody] Dictionary<string, object> formData)
-        {
-            string sovanbanid = "";
-            if (formData.Keys.Contains("sovanbanid") && !string.IsNullOrEmpty(Convert.ToString(formData["sovanbanid"]))) { sovanbanid = Convert.ToString(formData["sovanbanid"]); }
-            _sovbBusiness.Delete(sovanbanid);
-            return Ok();
-        }
 
-       
-        [Route("update-svb")]
-        [HttpPost]
-        public SoVanBanModel UpdateUser([FromBody] SoVanBanModel model)
-        {
-
-            _sovbBusiness.Update(model);
-            return model;
-        }
     }
 }
